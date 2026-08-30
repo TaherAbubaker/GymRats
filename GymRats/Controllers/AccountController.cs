@@ -39,7 +39,7 @@ namespace GymRats.Controllers
             if (user != null)
             {
                 HttpContext.Session.SetInt32("UserId", user.Id);
-                return RedirectToAction("Index", "Class");
+                return RedirectToAction("Profile");
             }
             else
             {
@@ -47,6 +47,7 @@ namespace GymRats.Controllers
                 return View();
             }
         }
+
         [HttpGet]
         public IActionResult Logout() 
         { 
@@ -58,6 +59,9 @@ namespace GymRats.Controllers
         public IActionResult Profile()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+                return RedirectToAction("Login");
+
             User user = context.Users.FirstOrDefault(u => u.Id == userId);
             return View(user);
         }
