@@ -1,4 +1,4 @@
-# GymRats 🏋️
+# GymRats 🏋️🏋️
 
 A simple ASP.NET MVC web app where users can sign up, log in, browse gym classes, and book a spot in one.
 
