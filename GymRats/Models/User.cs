@@ -18,5 +18,7 @@ namespace GymRats.Models
 
         [Required]
         public string PasswordHash { get; set; }
+
+        public bool IsAdmin { get; set; } = false;
     }
 }
