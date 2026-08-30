@@ -1,0 +1,50 @@
+@model IEnumerable<GymRats.Models.Class>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Classes";
+}
+
+<div class="container my-4" style="max-width: 960px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Gym Classes</h2>
+        <a asp-action="Add" class="btn btn-primary">Add New Class</a>
+    </div>
+
+    <form asp-action="Search" method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="key1" class="form-control" placeholder="Search by class name or trainer..." />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="card p-4 text-center">
+            <p class="mb-0 text-muted">No classes found.</p>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var item in Model)
+            {
+                <div class="card p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="fw-bold mb-1">@item.Name</h4>
+                            <p class="mb-1 text-muted"><strong>Trainer:</strong> @item.Trainer</p>
+                            <p class="mb-0 text-muted"><strong>Time:</strong> @item.Time.ToString("g")</p>
+                        </div>
+                        <div>
+                            <form asp-controller="Booking" asp-action="Book" method="post">
+                                <input type="hidden" name="classId" value="@item.Id" />
+                                <button type="submit" class="btn btn-primary">Book</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
