@@ -1,0 +1,22 @@
+﻿@model GymRats.Models.User
+
+<h3>Sign Up</h3>
+
+<form asp-action="Register" asp-controller="Account" method="post">
+    <div>
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" />
+    </div>
+    <div>
+        <label asp-for="Email">Email</label>
+        <input asp-for="Email" />
+    </div>
+    <div>
+        <label asp-for="PasswordHash">Password</label>
+        <input asp-for="PasswordHash" type="password" />
+    </div>
+
+    <button type="submit">Sign Up</button>
+</form>
+
+<a asp-controller="Account" asp-action="Login">Already have an account? Login</a>
