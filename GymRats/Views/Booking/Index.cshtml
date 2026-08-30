@@ -1,0 +1,12 @@
+﻿@model List<GymRats.Models.Booking>
+
+@foreach (var booking in Model)
+{
+    <div>
+        <p>@booking.Class.Name — @booking.Class.Trainer — @booking.Class.Time</p>
+        @using (Html.BeginForm("Cancel", "Booking", new { id = booking.Id }))
+        {
+            <button type="submit">Cancel</button>
+        }
+    </div>
+}
