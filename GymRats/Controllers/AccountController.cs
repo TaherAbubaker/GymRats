@@ -1,6 +1,7 @@
 ﻿using GymRats.Data;
 using GymRats.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymRats.Controllers
 {
@@ -63,6 +64,15 @@ namespace GymRats.Controllers
                 return RedirectToAction("Login");
 
             User user = context.Users.FirstOrDefault(u => u.Id == userId);
+
+            var userBookings = context.Bookings
+                .Include(b => b.Class)
+                .Where(b => b.UserId == userId)
+                .OrderBy(b => b.Class.Time)
+                .ToList();
+
+            ViewBag.Bookings = userBookings;
+
             return View(user);
         }
     }
