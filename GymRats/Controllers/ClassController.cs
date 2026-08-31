@@ -13,24 +13,19 @@ namespace GymRats.Controllers
             this.context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
-            var classes = context.Classes.ToList();
-            return View(classes);
-        }
+            var query = context.Classes.AsQueryable();
 
-        public IActionResult Search(string key1)
-        {
-            if (string.IsNullOrWhiteSpace(key1))
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                return RedirectToAction("Index");
+                query = query.Where(c => c.Name.Contains(search) || c.Trainer.Contains(search));
             }
 
-            var classes = context.Classes
-                .Where(c => c.Name.Contains(key1) || c.Trainer.Contains(key1))
-                .ToList();
+            var classes = query.OrderByDescending(c => c.Time).ToList();
 
-            return View("Index", classes);
+            ViewData["SearchQuery"] = search;
+            return View(classes);
         }
 
         [HttpGet]
@@ -68,6 +63,31 @@ namespace GymRats.Controllers
 
             context.Classes.Add(newClass);
             context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            User user = context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null || !user.IsAdmin)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var classToDelete = context.Classes.FirstOrDefault(c => c.Id == id);
+            if (classToDelete != null)
+            {
+                context.Classes.Remove(classToDelete);
+                context.SaveChanges();
+            }
+
             return RedirectToAction("Index");
         }
     }
