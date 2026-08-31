@@ -15,5 +15,19 @@ namespace GymRats.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Class> Classes { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = 1,
+                Name = "Admin",
+                Email = "admin@gmail.com",
+                PasswordHash = "admin123",
+                IsAdmin = true
+            });
+        }
     }
 }
