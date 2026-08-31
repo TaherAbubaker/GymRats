@@ -1,582 +1,748 @@
-﻿@model List<GymRats.Models.Booking>
+﻿
+@model List<GymRats.Models.Booking>
 
 @{
     ViewData["Title"] = "My Bookings";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<style>
-    :root {
-        --gr-dark: #0f1620;
-        --gr-dark-soft: #172231;
-        --gr-accent: #FF5722;
-        --gr-accent-light: #ff7a50;
-        --gr-confirmed: #1f4e79;
-        --gr-confirmed-light: #e8f2fa;
-        --gr-completed: #0f1620;
-        --gr-muted: #7c8796;
-        --gr-border: #e3e7ed;
-        --gr-bg: #f4f6fb;
-        --gr-white: #ffffff;
-        --gr-green: #2e8b72;
-        --gr-green-light: #e6f5f0;
-    }
+    <title>My Bookings - GymRats</title>
 
-    /* PAGE */
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-    .gr-page {
-        position: relative;
-        font-family: 'Inter', sans-serif;
-        min-height: 100vh;
-        padding: 48px 40px;
-        overflow: hidden;
-    }
-
-    /* HEADER */
-
-    .gr-heading {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-weight: 800;
-        font-size: 3rem;
-        letter-spacing: 0.5px;
-        color: var(--gr-dark);
-        margin-bottom: 4px;
-        text-transform: uppercase;
-        line-height: 1;
-    }
-
-        .gr-heading::after {
-            content: "";
-            display: block;
-            width: 48px;
-            height: 4px;
-            margin-top: 12px;
-            border-radius: 10px;
-            background: linear-gradient( 90deg, var(--gr-accent), var(--gr-accent-light) );
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-    .gr-subtext {
-        color: var(--gr-muted);
-        font-size: 0.95rem;
-        max-width: 520px;
-        line-height: 1.65;
-        margin-top: 14px;
-    }
-
-    /* FILTER */
-
-    .gr-status-filter {
-        background: rgba(255,255,255,0.9);
-        border: 1px solid var(--gr-border);
-        color: var(--gr-dark);
-        font-family: 'Barlow Condensed', sans-serif;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        font-size: 0.9rem;
-        padding: 10px 18px;
-        border-radius: 8px;
-        box-shadow: 0 4px 14px rgba(15, 22, 32, 0.05);
-        transition: all 0.2s ease;
-    }
-
-        .gr-status-filter:hover,
-        .gr-status-filter:focus {
-            background: #fff;
-            color: var(--gr-dark);
-            border-color: var(--gr-accent);
-            box-shadow: 0 6px 18px rgba(255, 87, 34, 0.12);
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            color: #14212b;
         }
 
-    .dropdown-menu {
-        border: 1px solid var(--gr-border);
-        border-radius: 10px;
-        padding: 6px;
-        box-shadow: 0 15px 35px rgba(15, 22, 32, 0.12);
-    }
+        /* =========================
+           PAGE
+        ========================= */
 
-    .dropdown-item {
-        border-radius: 6px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        padding: 9px 12px;
-    }
-
-        .dropdown-item:hover {
-            background: #fff1ec;
-            color: var(--gr-accent);
+        .bookings-container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 24px;
         }
 
-    /* TABLE CARD */
+        /* =========================
+           HEADER
+        ========================= */
 
-    .gr-table-card {
-        position: relative;
-        background: rgba(255,255,255,0.96);
-        border: 1px solid rgba(227,231,237,0.9);
-        border-radius: 14px;
-        overflow: hidden;
-        margin-top: 32px;
-        box-shadow: 0 12px 30px rgba(15, 22, 32, 0.06), 0 2px 5px rgba(15, 22, 32, 0.03);
-    }
-
-        /* Orange accent line */
-
-        .gr-table-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient( 90deg, var(--gr-accent), var(--gr-accent-light), #ff9b78 );
-            z-index: 2;
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 30px;
+            margin-bottom: 48px;
         }
 
-    .gr-table {
-        margin-bottom: 0;
-    }
-
-        /* TABLE HEADER */
-
-        .gr-table thead tr {
-            background: linear-gradient( 135deg, var(--gr-dark), var(--gr-dark-soft) );
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 12px;
         }
 
-        .gr-table thead th {
-            color: rgba(255,255,255,0.82);
-            font-family: 'Barlow Condensed', sans-serif;
+        .title-accent {
+            width: 80px;
+            height: 6px;
+            background-color: #b91c1c;
+        }
+
+        .page-description {
+            max-width: 520px;
+            margin-top: 18px;
+            color: #64748b;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           FILTER
+        ========================= */
+
+        .filter-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-label {
+            font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
-            font-size: 0.78rem;
-            border: none;
-            padding: 18px 20px;
-            vertical-align: middle;
+            color: #64748b;
         }
 
-            .gr-table thead th:first-child {
-                padding-left: 24px;
-            }
+        .status-filter {
+            appearance: none;
+            background-color: #dbeafe;
+            border: 2px solid #0f172a;
+            border-radius: 0;
+            padding: 12px 42px 12px 16px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #0f172a;
+            cursor: pointer;
+        }
 
-        /* TABLE BODY */
+        .status-filter:focus {
+            outline: none;
+            border-color: #b91c1c;
+        }
 
-        .gr-table tbody tr {
+        /* =========================
+           SUMMARY STRIP
+        ========================= */
+
+        .booking-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .summary-card {
+            background-color: #dbeafe;
+            padding: 28px 32px;
             position: relative;
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            min-height: 140px;
         }
 
-            .gr-table tbody tr:hover {
-                background: linear-gradient( 90deg, #fff8f5, #ffffff );
-            }
+        .summary-card.dark {
+            background-color: #0f172a;
+            color: #ffffff;
+        }
 
-        .gr-table tbody td {
-            padding: 20px;
+        .summary-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 12px;
+        }
+
+        .dark .summary-label {
+            color: #94a3b8;
+        }
+
+        .summary-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .summary-small {
+            margin-top: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dark .summary-small {
+            color: #cbd5e1;
+        }
+
+        /* =========================
+           SECTION HEADER
+        ========================= */
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #0f172a;
+        }
+
+        .section-count {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .bookings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bookings-table th {
+            background-color: #0f172a;
+            color: #ffffff;
+            text-align: left;
+            padding: 16px 24px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .bookings-table td {
+            background-color: #dbeafe;
+            padding: 22px 24px;
+            border-bottom: 4px solid #f8fafc;
             vertical-align: middle;
-            border-top: 1px solid var(--gr-border);
-            color: var(--gr-dark);
         }
 
-            .gr-table tbody td:first-child {
-                padding-left: 24px;
+        .bookings-table tbody tr {
+            transition: transform 0.15s ease;
+        }
+
+        .bookings-table tbody tr:hover {
+            transform: translateX(4px);
+        }
+
+        /* =========================
+           CLASS
+        ========================= */
+
+        .class-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #0f172a;
+        }
+
+        .class-type {
+            margin-top: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* =========================
+           TRAINER
+        ========================= */
+
+        .trainer-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        /* =========================
+           DATE
+        ========================= */
+
+        .booking-date {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #14212b;
+        }
+
+        .booking-time {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status-badge {
+            display: inline-block;
+            border: 2px solid #14212b;
+            padding: 6px 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .status-confirmed {
+            background-color: #ffffff;
+            color: #14212b;
+        }
+
+        .status-completed {
+            background-color: #0f172a;
+            color: #ffffff;
+            border-color: #0f172a;
+        }
+
+        /* =========================
+           CANCEL BUTTON
+        ========================= */
+
+        .cancel-button {
+            background: transparent;
+            border: 2px solid #b91c1c;
+            color: #b91c1c;
+            padding: 8px 14px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cancel-button:hover {
+            background-color: #b91c1c;
+            color: #ffffff;
+        }
+
+        .completed-action {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-state {
+            background-color: #dbeafe;
+            padding: 70px 30px;
+            text-align: center;
+        }
+
+        .empty-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            font-weight: 900;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .empty-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @@media (max-width: 900px) {
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-    /* CLASS */
+            .booking-summary {
+                grid-template-columns: 1fr;
+            }
 
-    .gr-class-name {
-        font-family: 'Barlow Condensed', sans-serif;
-        font-weight: 800;
-        font-size: 1.15rem;
-        letter-spacing: 0.3px;
-        text-transform: uppercase;
-        margin-bottom: 5px;
-        color: var(--gr-dark);
-    }
-
-    .gr-class-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 0.68rem;
-        letter-spacing: 0.7px;
-        color: var(--gr-muted);
-        text-transform: uppercase;
-        font-weight: 700;
-    }
-
-        .gr-class-tag::before {
-            content: "";
-            width: 6px;
-            height: 6px;
-            background: var(--gr-accent);
-            border-radius: 50%;
-            box-shadow: 0 0 0 3px rgba(255,87,34,0.1);
+            .page-title {
+                font-size: 3.2rem;
+            }
         }
 
-    /* TRAINER */
+        @@media (max-width: 650px) {
 
-    .gr-trainer {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 600;
-    }
+            .bookings-container {
+                margin: 35px auto;
+                padding: 0 16px;
+            }
 
-    .gr-trainer-avatar {
-        width: 34px;
-        height: 34px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: linear-gradient( 135deg, #eaf1f7, #d9e7f2 );
-        color: var(--gr-confirmed);
-        font-family: 'Barlow Condensed', sans-serif;
-        font-weight: 800;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-    }
+            .page-title {
+                font-size: 2.7rem;
+            }
 
-    /* DATE */
+            .page-description {
+                font-size: 0.8rem;
+            }
 
-    .gr-datetime {
-        min-width: 145px;
-    }
+            .booking-summary {
+                gap: 12px;
+                margin-bottom: 35px;
+            }
 
-    .gr-datetime-primary {
-        font-weight: 700;
-        font-size: 0.9rem;
-    }
+            .summary-card {
+                padding: 24px;
+            }
 
-    .gr-datetime-secondary {
-        display: inline-block;
-        margin-top: 4px;
-        color: var(--gr-muted);
-        font-size: 0.78rem;
-        font-weight: 500;
-        background: #f5f7fa;
-        padding: 3px 7px;
-        border-radius: 4px;
-    }
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+            }
 
-    /* STATUS */
+            .section-title {
+                font-size: 1.6rem;
+            }
 
-    .gr-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        font-family: 'Barlow Condensed', sans-serif;
-        font-weight: 700;
-        font-size: 0.75rem;
-        letter-spacing: 0.7px;
-        text-transform: uppercase;
-        padding: 7px 12px;
-        border-radius: 20px;
-        white-space: nowrap;
-    }
-
-        .gr-badge::before {
-            content: "";
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
+            .bookings-table th,
+            .bookings-table td {
+                padding: 16px;
+            }
         }
+    </style>
+</head>
 
-    .gr-badge-confirmed {
-        background: var(--gr-confirmed-light);
-        color: var(--gr-confirmed);
-        border: 1px solid #d4e5f2;
-    }
+<body>
 
-        .gr-badge-confirmed::before {
-            background: var(--gr-confirmed);
-            box-shadow: 0 0 0 3px rgba(31,78,121,0.1);
-        }
+<div class="bookings-container">
 
-    .gr-badge-completed {
-        background: #eef1f4;
-        color: var(--gr-completed);
-        border: 1px solid #dce1e6;
-    }
+    <!-- HEADER -->
 
-        .gr-badge-completed::before {
-            background: var(--gr-completed);
-        }
-
-    .gr-badge-cancelled {
-        background: #f7f8fa;
-        color: var(--gr-muted);
-        border: 1px solid var(--gr-border);
-    }
-
-        .gr-badge-cancelled::before {
-            background: var(--gr-muted);
-        }
-
-    /* ACTION */
-
-    .gr-action-btn {
-        font-family: 'Inter', sans-serif;
-        font-size: 0.78rem;
-        font-weight: 700;
-        padding: 7px 15px;
-        border-radius: 6px;
-        border-width: 1px;
-        transition: all 0.2s ease;
-    }
-
-        .gr-action-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 12px rgba(220, 53, 69, 0.12);
-        }
-
-    /* EMPTY STATE */
-
-    .gr-empty-state {
-        text-align: center;
-        padding: 80px 20px;
-        color: var(--gr-muted);
-        font-family: 'Inter', sans-serif;
-    }
-
-    .gr-empty-icon {
-        width: 64px;
-        height: 64px;
-        margin: 0 auto 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: #fff1ec;
-        color: var(--gr-accent);
-        font-size: 1.5rem;
-        font-weight: 700;
-    }
-
-    .gr-empty-title {
-        font-family: 'Barlow Condensed', sans-serif;
-        text-transform: uppercase;
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: var(--gr-dark);
-        margin-bottom: 5px;
-    }
-
-    
-</style>
-
-<div class="gr-page">
-
-    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+    <div class="page-header">
 
         <div>
-            <h1 class="gr-heading">My Bookings.</h1>
+            <h1 class="page-title">
+                My Bookings
+            </h1>
 
-            <p class="gr-subtext">
-                Manage your schedule, track your performance, and prepare for your upcoming sessions.
-                Consistency is key.
+            <div class="title-accent"></div>
+
+            <p class="page-description">
+                Keep track of your training sessions, upcoming classes,
+                and completed workouts. Stay consistent. Stay strong.
             </p>
         </div>
 
-        <div class="dropdown">
-            <button class="btn gr-status-filter dropdown-toggle"
-                    type="button"
-                    id="statusFilterBtn"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                All Status
-            </button>
+        <div class="filter-wrapper">
 
-            <ul class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="statusFilterBtn">
+            <span class="filter-label">
+                Filter
+            </span>
 
-                <li>
-                    <a class="dropdown-item" href="#" data-filter="all">
-                        All Status
-                    </a>
-                </li>
+            <select class="status-filter" id="statusFilter">
 
-                <li>
-                    <a class="dropdown-item" href="#" data-filter="confirmed">
-                        Confirmed
-                    </a>
-                </li>
+                <option value="all">
+                    All Bookings
+                </option>
 
-                <li>
-                    <a class="dropdown-item" href="#" data-filter="completed">
-                        Completed
-                    </a>
-                </li>
+                <option value="confirmed">
+                    Upcoming
+                </option>
 
-                <li>
-                    <a class="dropdown-item" href="#" data-filter="cancelled">
-                        Cancelled
-                    </a>
-                </li>
+                <option value="completed">
+                    Completed
+                </option>
 
-            </ul>
+            </select>
+
         </div>
 
     </div>
 
-    <div class="gr-table-card">
 
-        @if (Model != null && Model.Any())
-        {
-            <table class="table gr-table">
+    <!-- SUMMARY -->
+
+    @{
+        var now = DateTime.Now;
+
+        var upcomingBookings = Model?
+            .Where(b => b.Class.Time >= now)
+            .OrderBy(b => b.Class.Time)
+            .ToList()
+            ?? new List<GymRats.Models.Booking>();
+
+        var completedBookings = Model?
+            .Where(b => b.Class.Time < now)
+            .ToList()
+            ?? new List<GymRats.Models.Booking>();
+
+        var nextBooking = upcomingBookings.FirstOrDefault();
+    }
+
+    <div class="booking-summary">
+
+        <div class="summary-card dark">
+
+            <div class="summary-label">
+                Total Bookings
+            </div>
+
+            <div class="summary-value">
+                @((Model?.Count ?? 0).ToString("D2"))
+            </div>
+
+            <div class="summary-small">
+                All time
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Upcoming
+            </div>
+
+            <div class="summary-value">
+                @upcomingBookings.Count.ToString("D2")
+            </div>
+
+            <div class="summary-small">
+                Sessions scheduled
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="summary-label">
+                Completed
+            </div>
+
+            <div class="summary-value">
+                @completedBookings.Count.ToString("D2")
+            </div>
+
+            <div class="summary-small">
+                Sessions finished
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BOOKINGS -->
+
+    <div class="section-header">
+
+        <h2 class="section-title">
+            Booking History
+        </h2>
+
+        <span class="section-count" id="bookingCount">
+            @(Model?.Count ?? 0) Records
+        </span>
+
+    </div>
+
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="table-wrapper">
+
+            <table class="bookings-table">
 
                 <thead>
                     <tr>
-                        <th>Class Name</th>
+                        <th>Class</th>
                         <th>Trainer</th>
-                        <th>Date &amp; Time</th>
+                        <th>Date</th>
                         <th>Status</th>
-                        <th>Actions</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
-                    @foreach (var booking in Model)
-                    {
-                        var status = booking.Class.Time < DateTime.Now
-                            ? "completed"
-                            : "confirmed";
+                @foreach (var booking in Model.OrderByDescending(b => b.Class.Time))
+                {
+                    var status = booking.Class.Time < DateTime.Now
+                        ? "completed"
+                        : "confirmed";
 
-                        <tr data-status="@status">
+                    <tr data-status="@status">
 
-                            <td>
-                                <div class="gr-class-name">
-                                    @booking.Class.Name
-                                </div>
+                        <td>
 
-                                <div class="gr-class-tag">
-                                    Gym Class
-                                </div>
-                            </td>
+                            <div class="class-name">
+                                @booking.Class.Name
+                            </div>
 
-                            <td>
-                                <div class="gr-trainer">
-                                    <div class="gr-trainer-avatar">
-                                        @(string.IsNullOrEmpty(booking.Class.Trainer)
-                                            ? "?"
-                                            : booking.Class.Trainer.Substring(0, 1))
-                                    </div>
+                            <div class="class-type">
+                                Gym Class
+                            </div>
 
-                                    <span>
-                                        @booking.Class.Trainer
-                                    </span>
-                                </div>
-                            </td>
+                        </td>
 
-                            <td>
-                                <div class="gr-datetime">
-                                    <div class="gr-datetime-primary">
-                                        @booking.Class.Time.ToString("MMM dd, yyyy")
-                                    </div>
 
-                                    <div class="gr-datetime-secondary">
-                                        @booking.Class.Time.ToString("hh:mm tt")
-                                    </div>
-                                </div>
-                            </td>
+                        <td>
 
-                            <td>
+                            <div class="trainer-name">
+                                @booking.Class.Trainer
+                            </div>
 
-                                @if (status == "confirmed")
-                                {
-                                    <span class="gr-badge gr-badge-confirmed">
-                                        Confirmed
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="gr-badge gr-badge-completed">
-                                        Completed
-                                    </span>
-                                }
+                        </td>
 
-                            </td>
 
-                            <td>
+                        <td>
 
-                                @if (status == "confirmed")
-                                {
-                                    <form asp-action="Cancel"
-                                          asp-route-id="@booking.Id"
-                                          method="post"
-                                          onsubmit="return confirm('Cancel this booking?');">
+                            <div class="booking-date">
+                                @booking.Class.Time.ToString("MMM dd, yyyy").ToUpper()
+                            </div>
 
-                                        <button type="submit"
-                                                class="btn btn-outline-danger gr-action-btn">
-                                            Cancel
-                                        </button>
+                            <span class="booking-time">
+                                @booking.Class.Time.ToString("hh:mm tt")
+                            </span>
 
-                                    </form>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">&mdash;</span>
-                                }
+                        </td>
 
-                            </td>
 
-                        </tr>
-                    }
+                        <td>
+
+                            @if (status == "confirmed")
+                            {
+                                <span class="status-badge status-confirmed">
+                                    BOOKED
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-completed">
+                                    COMPLETED
+                                </span>
+                            }
+
+                        </td>
+
+
+                        <td>
+
+                            @if (status == "confirmed")
+                            {
+                                <form asp-action="Cancel"
+                                      asp-route-id="@booking.Id"
+                                      method="post"
+                                      onsubmit="return confirm('Cancel this booking?');">
+
+                                    <button type="submit"
+                                            class="cancel-button">
+                                        Cancel
+                                    </button>
+
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="completed-action">
+                                    Finished
+                                </span>
+                            }
+
+                        </td>
+
+                    </tr>
+                }
 
                 </tbody>
 
             </table>
-        }
-        else
-        {
-            <div class="gr-empty-state">
 
-                <div class="gr-empty-icon">
-                    +
-                </div>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
 
-                <div class="gr-empty-title">
-                    No bookings yet
-                </div>
-
-                <div>
-                    You haven't booked any classes yet.
-                </div>
-
+            <div class="empty-number">
+                00
             </div>
-        }
 
-    </div>
+            <div class="empty-title">
+                No Bookings Yet
+            </div>
+
+            <div class="empty-text">
+                You haven't booked a training session yet.
+                Time to get to work.
+            </div>
+
+        </div>
+    }
 
 </div>
 
+
 <script>
-    document.querySelectorAll('[data-filter]').forEach(function(item) {
 
-        item.addEventListener('click', function(e) {
+    const filter = document.getElementById('statusFilter');
+    const rows = document.querySelectorAll('.bookings-table tbody tr');
+    const count = document.getElementById('bookingCount');
 
-            e.preventDefault();
+    if (filter) {
 
-            var filter = this.getAttribute('data-filter');
+        filter.addEventListener('change', function () {
 
-            document.getElementById('statusFilterBtn').textContent =
-                this.textContent.trim();
+            const selected = this.value;
+            let visible = 0;
 
-            document.querySelectorAll('tbody tr[data-status]').forEach(function(row) {
+            rows.forEach(function (row) {
 
-                if (filter === 'all' ||
-                    row.getAttribute('data-status') === filter) {
+                const status = row.getAttribute('data-status');
+
+                if (selected === 'all' || status === selected) {
 
                     row.style.display = '';
-                }
-                else {
+                    visible++;
+
+                } else {
+
                     row.style.display = 'none';
+
                 }
 
             });
 
+            count.textContent = visible + (visible === 1 ? ' Record' : ' Records');
+
         });
 
-    });
+    }
+
 </script>
+
+</body>
+</html>
