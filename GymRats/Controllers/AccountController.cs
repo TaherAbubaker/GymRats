@@ -75,5 +75,34 @@ namespace GymRats.Controllers
 
             return View(user);
         }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(string oldPassword, string newPassword)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+
+            //i belive we wont need it but why not 
+            if (userId == null || user == null)
+                return RedirectToAction("Login");
+
+            if (user.PasswordHash == oldPassword)
+            {
+                user.PasswordHash = newPassword;
+                context.SaveChanges();
+                return RedirectToAction("Profile");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Invalid old password.");
+                return View();
+            }
+        }
     }
 }
