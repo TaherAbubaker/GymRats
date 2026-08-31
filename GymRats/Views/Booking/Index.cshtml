@@ -1,12 +1,356 @@
-﻿@model List<GymRats.Models.Booking>
+﻿
+@model List<GymRats.Models.Booking>
 
-@foreach (var booking in Model)
-{
-    <div>
-        <p>@booking.Class.Name — @booking.Class.Trainer — @booking.Class.Time</p>
-        @using (Html.BeginForm("Cancel", "Booking", new { id = booking.Id }))
-        {
-            <button type="submit">Cancel</button>
-        }
-    </div>
+@{
+    ViewData["Title"] = "My Bookings";
 }
+
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --gr-dark: #0f1620;
+        --gr-accent: #FF5722;
+        --gr-confirmed: #1f4e79;
+        --gr-completed: #0f1620;
+        --gr-muted: #8a94a3;
+        --gr-border: #e7e9ee;
+    }
+
+    .gr-page {
+        font-family: 'Inter', sans-serif;
+        background-color: #f4f6fb;
+        padding: 48px 40px;
+        min-height: 100vh;
+    }
+
+    .gr-heading {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 800;
+        font-size: 3rem;
+        letter-spacing: 0.5px;
+        color: var(--gr-dark);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+    }
+
+    .gr-subtext {
+        color: var(--gr-muted);
+        font-size: 0.95rem;
+        max-width: 520px;
+    }
+
+    .gr-status-filter {
+        background: #fff;
+        border: 1px solid var(--gr-border);
+        color: var(--gr-dark);
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: capitalize;
+        font-size: 0.85rem;
+        padding: 8px 16px;
+    }
+
+        .gr-status-filter:hover,
+        .gr-status-filter:focus {
+            background: #fff;
+            color: var(--gr-dark);
+            border-color: var(--gr-accent);
+        }
+
+    .gr-table-card {
+        background: #fff;
+        border: 1px solid var(--gr-border);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 28px;
+    }
+
+    .gr-table {
+        margin-bottom: 0;
+    }
+
+        .gr-table thead tr {
+            background-color: var(--gr-dark);
+        }
+
+        .gr-table thead th {
+            color: #fff;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: capitalize;
+            font-size: 0.8rem;
+            border: none;
+            padding: 16px 20px;
+            vertical-align: middle;
+        }
+
+        .gr-table tbody td {
+            padding: 18px 20px;
+            vertical-align: middle;
+            border-top: 1px solid var(--gr-border);
+            color: var(--gr-dark);
+        }
+
+    .gr-class-name {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 700;
+        font-size: 1.05rem;
+        letter-spacing: 0.3px;
+        text-transform: capitalize;
+        margin-bottom: 2px;
+    }
+
+    .gr-class-tag {
+        font-size: 0.72rem;
+        letter-spacing: 0.5px;
+        color: var(--gr-muted);
+        text-transform: capitalize;
+        font-weight: 600;
+    }
+
+    .gr-datetime-primary {
+        font-weight: 500;
+    }
+
+    .gr-datetime-secondary {
+        font-size: 0.85rem;
+        color: var(--gr-muted);
+    }
+
+    .gr-badge {
+        display: inline-block;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.6px;
+        text-transform: capitalize;
+        padding: 6px 14px;
+        border-radius: 3px;
+    }
+
+    .gr-badge-confirmed {
+        background-color: var(--gr-confirmed);
+        color: #fff;
+    }
+
+    .gr-badge-completed {
+        background-color: var(--gr-completed);
+        color: #fff;
+    }
+
+    .gr-badge-cancelled {
+        background-color: #fff;
+        color: var(--gr-muted);
+        border: 1px solid var(--gr-border);
+    }
+
+    .gr-action-btn {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 6px 14px;
+        border-radius: 4px;
+    }
+
+    .gr-empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--gr-muted);
+        font-family: 'Inter', sans-serif;
+    }
+</style>
+
+<div class="gr-page">
+
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+
+        <div>
+            <h1 class="gr-heading">My Bookings.</h1>
+
+            <p class="gr-subtext">
+                Manage your schedule, track your performance, and prepare for your upcoming sessions.
+                Consistency is key.
+            </p>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn gr-status-filter dropdown-toggle"
+                    type="button"
+                    id="statusFilterBtn"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                All Status
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="statusFilterBtn">
+
+                <li>
+                    <a class="dropdown-item" href="#" data-filter="all">
+                        All Status
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="#" data-filter="confirmed">
+                        Confirmed
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="#" data-filter="completed">
+                        Completed
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="#" data-filter="cancelled">
+                        Cancelled
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="gr-table-card">
+
+        @if (Model != null && Model.Any())
+        {
+            <table class="table gr-table">
+
+                <thead>
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Trainer</th>
+                        <th>Date &amp; Time</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var booking in Model)
+                    {
+                        var status = booking.Class.Time < DateTime.Now
+                            ? "completed"
+                            : "confirmed";
+
+                        <tr data-status="@status">
+
+                            <td>
+                                <div class="gr-class-name">
+                                    @booking.Class.Name
+                                </div>
+
+                                <div class="gr-class-tag">
+                                    Gym Class
+                                </div>
+                            </td>
+
+                            <td>
+                                @booking.Class.Trainer
+                            </td>
+
+                            <td>
+                                <div class="gr-datetime-primary">
+                                    @booking.Class.Time.ToString("MMM dd, yyyy")
+                                </div>
+
+                                <div class="gr-datetime-secondary">
+                                    @booking.Class.Time.ToString("hh:mm tt")
+                                </div>
+                            </td>
+
+                            <td>
+
+                                @if (status == "confirmed")
+                                {
+                                    <span class="gr-badge gr-badge-confirmed">
+                                        Confirmed
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="gr-badge gr-badge-completed">
+                                        Completed
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td>
+
+                                @if (status == "confirmed")
+                                {
+                                    <form asp-action="Cancel"
+                                          asp-route-id="@booking.Id"
+                                          method="post"
+                                          onsubmit="return confirm('Cancel this booking?');">
+
+                                        <button type="submit"
+                                                class="btn btn-outline-danger gr-action-btn">
+                                            Cancel
+                                        </button>
+
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">&mdash;</span>
+                                }
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        }
+        else
+        {
+            <div class="gr-empty-state">
+                You haven't booked any classes yet.
+            </div>
+        }
+
+    </div>
+
+</div>
+
+<script>
+    document.querySelectorAll('[data-filter]').forEach(function(item) {
+
+        item.addEventListener('click', function(e) {
+
+            e.preventDefault();
+
+            var filter = this.getAttribute('data-filter');
+
+            document.getElementById('statusFilterBtn').textContent =
+                this.textContent.trim();
+
+            document.querySelectorAll('tbody tr[data-status]').forEach(function(row) {
+
+                if (filter === 'all' ||
+                    row.getAttribute('data-status') === filter) {
+
+                    row.style.display = '';
+                }
+                else {
+                    row.style.display = 'none';
+                }
+
+            });
+
+        });
+
+    });
+</script>
