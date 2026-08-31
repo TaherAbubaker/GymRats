@@ -1,5 +1,4 @@
-﻿
-@model List<GymRats.Models.Booking>
+﻿@model List<GymRats.Models.Booking>
 
 @{
     ViewData["Title"] = "My Bookings";
@@ -10,19 +9,31 @@
 <style>
     :root {
         --gr-dark: #0f1620;
+        --gr-dark-soft: #172231;
         --gr-accent: #FF5722;
+        --gr-accent-light: #ff7a50;
         --gr-confirmed: #1f4e79;
+        --gr-confirmed-light: #e8f2fa;
         --gr-completed: #0f1620;
-        --gr-muted: #8a94a3;
-        --gr-border: #e7e9ee;
+        --gr-muted: #7c8796;
+        --gr-border: #e3e7ed;
+        --gr-bg: #f4f6fb;
+        --gr-white: #ffffff;
+        --gr-green: #2e8b72;
+        --gr-green-light: #e6f5f0;
     }
 
+    /* PAGE */
+
     .gr-page {
+        position: relative;
         font-family: 'Inter', sans-serif;
-        background-color: #f4f6fb;
-        padding: 48px 40px;
         min-height: 100vh;
+        padding: 48px 40px;
+        overflow: hidden;
     }
+
+    /* HEADER */
 
     .gr-heading {
         font-family: 'Barlow Condensed', sans-serif;
@@ -32,24 +43,42 @@
         color: var(--gr-dark);
         margin-bottom: 4px;
         text-transform: uppercase;
+        line-height: 1;
     }
+
+        .gr-heading::after {
+            content: "";
+            display: block;
+            width: 48px;
+            height: 4px;
+            margin-top: 12px;
+            border-radius: 10px;
+            background: linear-gradient( 90deg, var(--gr-accent), var(--gr-accent-light) );
+        }
 
     .gr-subtext {
         color: var(--gr-muted);
         font-size: 0.95rem;
         max-width: 520px;
+        line-height: 1.65;
+        margin-top: 14px;
     }
 
+    /* FILTER */
+
     .gr-status-filter {
-        background: #fff;
+        background: rgba(255,255,255,0.9);
         border: 1px solid var(--gr-border);
         color: var(--gr-dark);
         font-family: 'Barlow Condensed', sans-serif;
         font-weight: 700;
         letter-spacing: 0.5px;
-        text-transform: capitalize;
-        font-size: 0.85rem;
-        padding: 8px 16px;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        padding: 10px 18px;
+        border-radius: 8px;
+        box-shadow: 0 4px 14px rgba(15, 22, 32, 0.05);
+        transition: all 0.2s ease;
     }
 
         .gr-status-filter:hover,
@@ -57,110 +86,283 @@
             background: #fff;
             color: var(--gr-dark);
             border-color: var(--gr-accent);
+            box-shadow: 0 6px 18px rgba(255, 87, 34, 0.12);
         }
 
-    .gr-table-card {
-        background: #fff;
+    .dropdown-menu {
         border: 1px solid var(--gr-border);
-        border-radius: 6px;
-        overflow: hidden;
-        margin-top: 28px;
+        border-radius: 10px;
+        padding: 6px;
+        box-shadow: 0 15px 35px rgba(15, 22, 32, 0.12);
     }
+
+    .dropdown-item {
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 9px 12px;
+    }
+
+        .dropdown-item:hover {
+            background: #fff1ec;
+            color: var(--gr-accent);
+        }
+
+    /* TABLE CARD */
+
+    .gr-table-card {
+        position: relative;
+        background: rgba(255,255,255,0.96);
+        border: 1px solid rgba(227,231,237,0.9);
+        border-radius: 14px;
+        overflow: hidden;
+        margin-top: 32px;
+        box-shadow: 0 12px 30px rgba(15, 22, 32, 0.06), 0 2px 5px rgba(15, 22, 32, 0.03);
+    }
+
+        /* Orange accent line */
+
+        .gr-table-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient( 90deg, var(--gr-accent), var(--gr-accent-light), #ff9b78 );
+            z-index: 2;
+        }
 
     .gr-table {
         margin-bottom: 0;
     }
 
+        /* TABLE HEADER */
+
         .gr-table thead tr {
-            background-color: var(--gr-dark);
+            background: linear-gradient( 135deg, var(--gr-dark), var(--gr-dark-soft) );
         }
 
         .gr-table thead th {
-            color: #fff;
+            color: rgba(255,255,255,0.82);
             font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: capitalize;
-            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.78rem;
             border: none;
-            padding: 16px 20px;
+            padding: 18px 20px;
             vertical-align: middle;
         }
 
+            .gr-table thead th:first-child {
+                padding-left: 24px;
+            }
+
+        /* TABLE BODY */
+
+        .gr-table tbody tr {
+            position: relative;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+            .gr-table tbody tr:hover {
+                background: linear-gradient( 90deg, #fff8f5, #ffffff );
+            }
+
         .gr-table tbody td {
-            padding: 18px 20px;
+            padding: 20px;
             vertical-align: middle;
             border-top: 1px solid var(--gr-border);
             color: var(--gr-dark);
         }
 
+            .gr-table tbody td:first-child {
+                padding-left: 24px;
+            }
+
+    /* CLASS */
+
     .gr-class-name {
         font-family: 'Barlow Condensed', sans-serif;
-        font-weight: 700;
-        font-size: 1.05rem;
+        font-weight: 800;
+        font-size: 1.15rem;
         letter-spacing: 0.3px;
-        text-transform: capitalize;
-        margin-bottom: 2px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+        color: var(--gr-dark);
     }
 
     .gr-class-tag {
-        font-size: 0.72rem;
-        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.68rem;
+        letter-spacing: 0.7px;
         color: var(--gr-muted);
-        text-transform: capitalize;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+        .gr-class-tag::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background: var(--gr-accent);
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(255,87,34,0.1);
+        }
+
+    /* TRAINER */
+
+    .gr-trainer {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         font-weight: 600;
     }
 
+    .gr-trainer-avatar {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: linear-gradient( 135deg, #eaf1f7, #d9e7f2 );
+        color: var(--gr-confirmed);
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 800;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+    }
+
+    /* DATE */
+
+    .gr-datetime {
+        min-width: 145px;
+    }
+
     .gr-datetime-primary {
-        font-weight: 500;
+        font-weight: 700;
+        font-size: 0.9rem;
     }
 
     .gr-datetime-secondary {
-        font-size: 0.85rem;
+        display: inline-block;
+        margin-top: 4px;
         color: var(--gr-muted);
+        font-size: 0.78rem;
+        font-weight: 500;
+        background: #f5f7fa;
+        padding: 3px 7px;
+        border-radius: 4px;
     }
+
+    /* STATUS */
 
     .gr-badge {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
         font-family: 'Barlow Condensed', sans-serif;
         font-weight: 700;
-        font-size: 0.72rem;
-        letter-spacing: 0.6px;
-        text-transform: capitalize;
-        padding: 6px 14px;
-        border-radius: 3px;
+        font-size: 0.75rem;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+        padding: 7px 12px;
+        border-radius: 20px;
+        white-space: nowrap;
     }
+
+        .gr-badge::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
 
     .gr-badge-confirmed {
-        background-color: var(--gr-confirmed);
-        color: #fff;
+        background: var(--gr-confirmed-light);
+        color: var(--gr-confirmed);
+        border: 1px solid #d4e5f2;
     }
+
+        .gr-badge-confirmed::before {
+            background: var(--gr-confirmed);
+            box-shadow: 0 0 0 3px rgba(31,78,121,0.1);
+        }
 
     .gr-badge-completed {
-        background-color: var(--gr-completed);
-        color: #fff;
+        background: #eef1f4;
+        color: var(--gr-completed);
+        border: 1px solid #dce1e6;
     }
 
+        .gr-badge-completed::before {
+            background: var(--gr-completed);
+        }
+
     .gr-badge-cancelled {
-        background-color: #fff;
+        background: #f7f8fa;
         color: var(--gr-muted);
         border: 1px solid var(--gr-border);
     }
 
+        .gr-badge-cancelled::before {
+            background: var(--gr-muted);
+        }
+
+    /* ACTION */
+
     .gr-action-btn {
         font-family: 'Inter', sans-serif;
-        font-size: 0.82rem;
-        font-weight: 600;
-        padding: 6px 14px;
-        border-radius: 4px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 7px 15px;
+        border-radius: 6px;
+        border-width: 1px;
+        transition: all 0.2s ease;
     }
+
+        .gr-action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(220, 53, 69, 0.12);
+        }
+
+    /* EMPTY STATE */
 
     .gr-empty-state {
         text-align: center;
-        padding: 60px 20px;
+        padding: 80px 20px;
         color: var(--gr-muted);
         font-family: 'Inter', sans-serif;
     }
+
+    .gr-empty-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #fff1ec;
+        color: var(--gr-accent);
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .gr-empty-title {
+        font-family: 'Barlow Condensed', sans-serif;
+        text-transform: uppercase;
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--gr-dark);
+        margin-bottom: 5px;
+    }
+
+    
 </style>
 
 <div class="gr-page">
@@ -254,16 +456,28 @@
                             </td>
 
                             <td>
-                                @booking.Class.Trainer
+                                <div class="gr-trainer">
+                                    <div class="gr-trainer-avatar">
+                                        @(string.IsNullOrEmpty(booking.Class.Trainer)
+                                            ? "?"
+                                            : booking.Class.Trainer.Substring(0, 1))
+                                    </div>
+
+                                    <span>
+                                        @booking.Class.Trainer
+                                    </span>
+                                </div>
                             </td>
 
                             <td>
-                                <div class="gr-datetime-primary">
-                                    @booking.Class.Time.ToString("MMM dd, yyyy")
-                                </div>
+                                <div class="gr-datetime">
+                                    <div class="gr-datetime-primary">
+                                        @booking.Class.Time.ToString("MMM dd, yyyy")
+                                    </div>
 
-                                <div class="gr-datetime-secondary">
-                                    @booking.Class.Time.ToString("hh:mm tt")
+                                    <div class="gr-datetime-secondary">
+                                        @booking.Class.Time.ToString("hh:mm tt")
+                                    </div>
                                 </div>
                             </td>
 
@@ -317,7 +531,19 @@
         else
         {
             <div class="gr-empty-state">
-                You haven't booked any classes yet.
+
+                <div class="gr-empty-icon">
+                    +
+                </div>
+
+                <div class="gr-empty-title">
+                    No bookings yet
+                </div>
+
+                <div>
+                    You haven't booked any classes yet.
+                </div>
+
             </div>
         }
 
