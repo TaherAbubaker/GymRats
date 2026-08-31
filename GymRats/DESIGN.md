@@ -1,72 +1,45 @@
-# GymRats — Design System
+# GymRats — Updated Design System (Dark Navy & Crimson Edition)
 
-Paste this whole file into whatever AI tool you're using to generate a view, so every page comes out looking like it belongs to the same app. Keep it simple — this isn't meant to be fancy, just consistent.
+Paste this whole file into whatever AI tool you're using to generate a view, so every page matches your current dark navy and crimson aesthetic, custom font choices, and layout standards.
 
 ## Colors
 | Name | Hex | Use for |
 |---|---|---|
-| Primary (Red) | `#E63946` | Buttons, links, highlights, nav bar |
-| Dark | `#1D1D1D` | Headings, text |
-| Light Gray | `#F5F5F5` | Page background |
-| White | `#FFFFFF` | Cards, form backgrounds |
-| Success Green | `#2A9D8F` | "Booked!" confirmations |
-| Danger | `#D62828` | Cancel/delete buttons, error messages |
+| Primary / Accent (Crimson Red) | `#b91c1c` | Active underlines, badges, hover accents, footer accent borders |
+| Dark Navy (Background/Cards) | `#0f172a` | Navbar, dark theme cards, headers |
+| Light Blue / Muted Card BG | `#dbeafe` | Standard cards, table backgrounds, stat blocks |
+| Page Background | `#f8fafc` | Main body background |
+| White | `#ffffff` | Text, card elements on dark backgrounds |
+| Text Muted | `#64748b` | Sub-labels, secondary table details |
 
 ## Typography
-- Font: `'Poppins', sans-serif` (import from Google Fonts) — falls back to the Bootstrap default if not loaded.
-- Headings: bold, Dark color.
-- Body text: regular weight, Dark color, 16px base size.
+- **Primary Font**: `'Poppins', sans-serif` for body text, labels, and UI elements.
+- **Display Font**: `'Playfair Display', serif` (weights 700 and 900) for major page titles, card names, and large metrics.
+- **Headings**: Uppercase, bold/black weight, styled with sharp modern hierarchy.
 
 ## Layout Rules
-- Every page extends `_Layout.cshtml` — never build a page without `@{ Layout = "_Layout"; }` (or just don't touch that line, Razor does it automatically).
-- Max content width: 960px, centered.
-- Cards (for classes, bookings): white background, rounded corners (`border-radius: 8px`), light shadow.
-- Buttons: rounded (`border-radius: 6px`), Primary color background, white text.
-- Forms: stack labels above inputs, full-width inputs, one column (no side-by-side fields).
+- **Layout & Structure**: Every page extends `_Layout.cshtml`, which provides the standard dark navy navbar and matching footer.
+- **Max Content Width**: Container-based layout centered via max-width wrappers (e.g., `.profile-container` max-width 1200px).
+- **Cards**: Distinct card styles utilizing either Light Blue (`#dbeafe`) or Dark Navy (`#0f172a`) with sharp or minimal rounded corners and high-contrast typography.
+- **Tables**: Clean border-collapse layouts featuring dark navy headers (`#0f172a`), light blue row backgrounds (`#dbeafe`), and clear uppercase text styling.
+- **Buttons**: Outlined or solid interactive components transitioning to crimson red (`#b91c1c`) on hover.
 
-## CSS to drop into `wwwroot/css/site.css`
-This defines the variables above so every view can just reference them.
-
+## CSS Reference Variables
 ```css
 :root {
-  --color-primary: #E63946;
-  --color-dark: #1D1D1D;
-  --color-bg: #F5F5F5;
-  --color-white: #FFFFFF;
-  --color-success: #2A9D8F;
-  --color-danger: #D62828;
+  --color-primary: #b91c1c;
+  --color-bg-dark: #0f172a;
+  --color-card-light: #dbeafe;
+  --color-body-bg: #f8fafc;
+  --color-text-dark: #0f172a;
+  --color-text-muted: #64748b;
   --font-main: 'Poppins', sans-serif;
+  --font-display: 'Playfair Display', serif;
 }
 
-body {
-  background-color: var(--color-bg);
-  color: var(--color-dark);
-  font-family: var(--font-main);
-}
 
-.btn-primary {
-  background-color: var(--color-primary) !important;
-  border-color: var(--color-primary) !important;
-  border-radius: 6px;
-}
-
-.btn-danger {
-  background-color: var(--color-danger) !important;
-  border-color: var(--color-danger) !important;
-  border-radius: 6px;
-}
-
-.card {
-  background-color: var(--color-white);
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  border: none;
-}
-```
-
-## Prompt template for AI-generated views
-When asking an AI to build a `.cshtml` view, paste this:
-
-> "Build a Razor view for [describe the page]. Use Bootstrap classes for layout, but follow this color palette: primary red `#E63946`, dark text `#1D1D1D`, light gray background `#F5F5F5`. Buttons should use the `.btn-primary` or `.btn-danger` classes already defined in site.css — don't inline new colors. Wrap content in a `.card` div. Keep it simple, one column, no sidebars."
-
-That keeps every generated page visually consistent even if three different people (or three different AI chats) built them.
+prompt to use 
+"Build a Razor view for [describe the page]. Follow the GymRats dark navy and crimson design system: 
+use a light blue card background (#dbeafe) or dark navy (#0f172a), crimson red accents (#b91c1c), 'Playfair Display' for major titles/numbers, 
+and 'Poppins' for body text. Keep layouts clean, uppercase structural elements where appropriate, 
+and ensure compatibility with the site's _Layout.cshtml."

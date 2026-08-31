@@ -44,7 +44,7 @@ namespace GymRats
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Class}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
 
             app.Run();
         }

@@ -1,5 +1,412 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model GymRats.Models.User
+@using GymRats.Models
 @{
+    ViewData["Title"] = "My Profile";
+
+    // Dynamic Role Logic
+    string userRole = Model.IsAdmin ? "ADMIN" : "USER";
+    string roleStatus = Model.IsAdmin ? "ELEVATED" : "ACTIVE";
+    string roleAccess = Model.IsAdmin ? "FULL SYSTEM ACCESS" : "STANDARD ATHLETE ACCESS";
+
+    // Extract bookings from ViewBag
+    var bookings = ViewBag.Bookings as List<Booking> ?? new List<Booking>();
+
+    // Filter by date
+    var now = DateTime.Now;
+    var pastClasses = bookings.Where(b => b.Class.Time < now).ToList();
+    var upcomingClasses = bookings.Where(b => b.Class.Time >= now).OrderBy(b => b.Class.Time).ToList();
+
+    // Calculate Dynamic Stats
+    int classesTaken = pastClasses.Count;
+    string closestBooking = upcomingClasses.Any()
+        ? upcomingClasses.First().Class.Time.ToString("MMM dd").ToUpper()
+        : "NONE";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile - GymRats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'Poppins', sans-serif;
+                background-color: #f8fafc;
+                color: #14212b;
+            }
+
+            .profile-container {
+                max-width: 1200px;
+                margin: 60px auto;
+                padding: 0 24px;
+            }
+
+            /* Header */
+            .page-header {
+                margin-bottom: 48px;
+            }
+
+            .page-title {
+                font-family: 'Playfair Display', serif;
+                font-size: 4rem;
+                font-weight: 900;
+                text-transform: uppercase;
+                color: #0f172a;
+                line-height: 1;
+                margin-bottom: 8px;
+            }
+
+            .title-accent {
+                width: 80px;
+                height: 6px;
+                background-color: #b91c1c;
+            }
+
+            /* Grid Layout */
+            .profile-grid {
+                display: grid;
+                grid-template-columns: 380px 1fr;
+                gap: 40px;
+            }
+
+            /* Left Column Cards */
+            .card {
+                padding: 32px;
+                border-radius: 2px;
+                margin-bottom: 24px;
+            }
+
+            .card-light {
+                background-color: #dbeafe;
+            }
+
+            .card-dark {
+                background-color: #0f172a;
+                color: #ffffff;
+            }
+
+            /* User Info Box */
+            .user-name {
+                font-family: 'Playfair Display', serif;
+                font-size: 2rem;
+                font-weight: 900;
+                text-transform: uppercase;
+                margin-bottom: 4px;
+            }
+
+            .user-joined {
+                font-size: 0.75rem;
+                font-weight: 700;
+                color: #3b82f6;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 24px;
+            }
+
+            .info-label {
+                font-size: 0.65rem;
+                font-weight: 700;
+                color: #64748b;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 4px;
+            }
+
+            .info-value {
+                font-size: 0.95rem;
+                font-weight: 500;
+                margin-bottom: 16px;
+            }
+
+            .btn-logout {
+                width: 100%;
+                padding: 14px;
+                background-color: transparent;
+                color: #14212b;
+                border: 2px solid #14212b;
+                font-family: 'Poppins', sans-serif;
+                font-weight: 700;
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                margin-top: 16px;
+            }
+
+                .btn-logout:hover {
+                    background-color: #b91c1c;
+                    border-color: #b91c1c;
+                    color: #ffffff;
+                }
+
+            /* Role Box */
+            .role-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .role-title {
+                color: #b91c1c;
+                font-weight: 900;
+                font-size: 1rem;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+            }
+
+            .role-badge {
+                background-color: #b91c1c;
+                color: #fff;
+                font-size: 0.7rem;
+                font-weight: 700;
+                padding: 4px 8px;
+                border-radius: 2px;
+                letter-spacing: 1px;
+            }
+
+            .role-name {
+                font-family: 'Playfair Display', serif;
+                font-size: 5rem;
+                font-weight: 900;
+                line-height: 1;
+                margin-bottom: 24px;
+            }
+
+            .role-access {
+                font-size: 0.8rem;
+                font-weight: 600;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                border-bottom: 1px solid #334155;
+                padding-bottom: 24px;
+                margin-bottom: 24px;
+            }
+
+            /* Right Column Stats */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+                margin-bottom: 40px;
+            }
+
+            .stat-card {
+                background-color: #dbeafe;
+                padding: 32px;
+                position: relative;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+                font-weight: 700;
+                color: #64748b;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 12px;
+            }
+
+            .stat-value {
+                font-family: 'Playfair Display', serif;
+                font-size: 4.5rem;
+                font-weight: 900;
+                color: #0f172a;
+                line-height: 1;
+            }
+
+            .stat-icon {
+                position: absolute;
+                bottom: 32px;
+                right: 32px;
+                font-size: 2rem;
+                color: #b91c1c;
+            }
+
+            /* Table Section */
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 16px;
+            }
+
+            .section-title {
+                font-family: 'Playfair Display', serif;
+                font-size: 2rem;
+                font-weight: 900;
+                text-transform: uppercase;
+            }
+
+            .view-all {
+                font-size: 0.8rem;
+                font-weight: 700;
+                color: #3b82f6;
+                text-decoration: none;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+
+            .classes-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+                .classes-table th {
+                    background-color: #0f172a;
+                    color: #ffffff;
+                    text-align: left;
+                    padding: 16px 24px;
+                    font-size: 0.75rem;
+                    font-weight: 700;
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                }
+
+                .classes-table td {
+                    background-color: #dbeafe;
+                    padding: 20px 24px;
+                    border-bottom: 4px solid #f8fafc;
+                    vertical-align: middle;
+                }
+
+            .td-date {
+                font-weight: 700;
+                font-size: 0.9rem;
+            }
+
+            .td-class {
+                font-family: 'Playfair Display', serif;
+                font-size: 1.25rem;
+                font-weight: 900;
+                text-transform: uppercase;
+            }
+
+            .td-trainer {
+                color: #475569;
+                font-weight: 500;
+                font-size: 0.95rem;
+            }
+
+            .status-badge {
+                border: 2px solid #14212b;
+                padding: 6px 12px;
+                font-size: 0.7rem;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                display: inline-block;
+            }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="page-header">
+            <h1 class="page-title">My Profile</h1>
+            <div class="title-accent"></div>
+        </div>
+
+        <div class="profile-grid">
+
+            <!-- LEFT COLUMN -->
+            <div class="column-left">
+
+                <!-- User Info -->
+                <div class="card card-light">
+                    <h2 class="user-name">@Model.Name</h2>
+                    <div class="user-joined">MEMBER</div>
+
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value">@Model.Email</div>
+
+                    <form asp-controller="Account" asp-action="Logout" method="get">
+                        <button type="submit" class="btn-logout">
+                            LOGOUT
+                        </button>
+                    </form>
+                    <form asp-controller="Account" asp-action="ChangePassword" method="get">
+                        <button type="submit" class="btn-logout">
+							CHANGE PASSWORD
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Role / Access Card -->
+                <div class="card card-dark">
+                    <div class="role-header">
+                        <div class="role-title">ROLE</div>
+                        <div class="role-badge">@roleStatus</div>
+                    </div>
+
+                    <div class="role-name">@userRole</div>
+                    <div class="role-access">@roleAccess</div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="column-right">
+
+                <!-- Stats Row -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Closest Booking</div>
+                        <div class="stat-value">@closestBooking</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Classes Taken</div>
+                        <div class="stat-value">@classesTaken.ToString("D2")</div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Classes Table -->
+                <div class="section-header">
+                    <h3 class="section-title">Upcoming Classes</h3>
+                    <a asp-controller="Booking" asp-action="Index" class="view-all">View All Bookings →</a>
+                </div>
+
+                <table class="classes-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Class</th>
+                            <th>Trainer</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (upcomingClasses.Any())
+                        {
+                            foreach (var booking in upcomingClasses)
+                            {
+                                <tr>
+                                    <td class="td-date">@booking.Class.Time.ToString("MMM dd").ToUpper()</td>
+                                    <td class="td-class">@booking.Class.Name</td>
+                                    <td class="td-trainer">@booking.Class.Trainer</td>
+                                    <td><span class="status-badge">BOOKED</span></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 48px; color: #64748b; font-weight: 700; letter-spacing: 1px;">
+                                    NO UPCOMING CLASSES BOOKED. TIME TO GET TO WORK.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

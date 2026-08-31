@@ -1,22 +1,246 @@
 ﻿@model GymRats.Models.User
+@{
+    Layout = null;
+    ViewData["Title"] = "Register";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - GymRats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+            * {
+                box-sizing: border-box;
+            }
 
-<h3>Sign Up</h3>
+            body {
+                margin: 0;
+                font-family: 'Poppins', sans-serif;
+            }
 
-<form asp-action="Register" asp-controller="Account" method="post">
-    <div>
-        <label asp-for="Name">Name</label>
-        <input asp-for="Name" />
+            .auth-wrapper {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            .auth-visual {
+                flex: 1;
+                position: relative;
+                background: linear-gradient(rgba(10, 20, 30, 0.4), rgba(10, 20, 30, 0.7)), url('/images/gym-hero.jpg') center/cover no-repeat;
+                background-color: #0d1b26;
+                color: #fff;
+                padding: 48px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+                .auth-visual .brand {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 2.25rem;
+                    font-weight: 900;
+                    color: var(--color-primary, #a61b1b);
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                }
+
+                .auth-visual .headline {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 4rem;
+                    font-weight: 900;
+                    line-height: 1.05;
+                    margin-bottom: 16px;
+                    text-transform: uppercase;
+                }
+
+                .auth-visual .subtext {
+                    max-width: 420px;
+                    font-size: 1.05rem;
+                    color: #e2e8f0;
+                    line-height: 1.6;
+                }
+
+            .auth-form-side {
+                flex: 1;
+                background-color: #f8fafc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 48px;
+            }
+
+            .auth-form-inner {
+                width: 100%;
+                max-width: 460px;
+            }
+
+                .auth-form-inner h1 {
+                    font-family: 'Playfair Display', serif;
+                    font-weight: 900;
+                    font-size: 2.5rem;
+                    line-height: 1.15;
+                    color: #14212b;
+                    margin-bottom: 12px;
+                    text-transform: uppercase;
+                }
+
+            .auth-form-subtext {
+                font-size: 0.95rem;
+                color: #64748b;
+                margin-bottom: 32px;
+                line-height: 1.5;
+            }
+
+            .auth-label {
+                display: block;
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: #14212b;
+                margin-bottom: 8px;
+            }
+
+            .auth-input {
+                width: 100%;
+                padding: 14px 16px;
+                margin-bottom: 20px;
+                border: 1px solid #cbd5e1;
+                border-radius: 4px;
+                background-color: #ffffff;
+                font-family: 'Poppins', sans-serif;
+                font-size: 0.95rem;
+                color: #14212b;
+            }
+
+                .auth-input::placeholder {
+                    color: #94a3b8;
+                }
+
+            .auth-checkbox-group {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                font-size: 0.85rem;
+                color: #475569;
+                margin-bottom: 24px;
+            }
+
+                .auth-checkbox-group input[type="checkbox"] {
+                    width: 16px;
+                    height: 16px;
+                    margin-top: 3px;
+                    cursor: pointer;
+                }
+
+                .auth-checkbox-group label {
+                    cursor: pointer;
+                    line-height: 1.4;
+                }
+
+                .auth-checkbox-group a {
+                    color: #6082a6;
+                    text-decoration: underline;
+                }
+
+            .auth-submit {
+                width: 100%;
+                padding: 16px;
+                background-color: var(--color-primary, #b91c1c);
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                font-size: 1rem;
+                cursor: pointer;
+                margin-top: 8px;
+            }
+
+                .auth-submit:hover {
+                    background-color: #991b1b;
+                }
+
+            .auth-divider {
+                border: none;
+                border-top: 1px solid #e2e8f0;
+                margin: 24px 0;
+            }
+
+            .auth-footer-text {
+                text-align: center;
+                font-size: 0.85rem;
+                color: #64748b;
+                text-transform: uppercase;
+                font-weight: 500;
+                letter-spacing: 0.5px;
+            }
+
+                .auth-footer-text a {
+                    color: #b91c1c;
+                    font-weight: 700;
+                    text-decoration: none;
+                    margin-left: 6px;
+                }
+
+            .auth-error {
+                color: #b91c1c;
+                font-size: 0.9rem;
+                margin-bottom: 16px;
+            }
+
+                .auth-error ul {
+                    padding-left: 20px;
+                    margin-top: 0;
+                }
+    </style>
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-visual">
+            <div class="brand">GYMRAT</div>
+            <div>
+                <div class="headline">FOR THE<br />DRIVEN.</div>
+                <p class="subtext">Push beyond your limits. Join a community built on discipline, intensity, and absolute performance.</p>
+            </div>
+        </div>
+
+        <div class="auth-form-side">
+            <div class="auth-form-inner">
+                <h1>JOIN THE GRIND.</h1>
+                <p class="auth-form-subtext">Create your account to start booking classes and tracking your progress.</p>
+
+                <div asp-validation-summary="All" class="auth-error"></div>
+
+                <form asp-action="Register" asp-controller="Account" method="post">
+
+                    <label class="auth-label" asp-for="Name">Full Name</label>
+                    <input asp-for="Name" class="auth-input" placeholder="Taher Abubaker" required />
+
+                    <label class="auth-label" asp-for="Email">Email Address</label>
+                    <input asp-for="Email" class="auth-input" placeholder="ATHLETE@GYMRAT.COM" required />
+
+                    <label class="auth-label" asp-for="PasswordHash">Password</label>
+                    <input asp-for="PasswordHash" type="password" class="auth-input" placeholder="********" required />
+
+                    <div class="auth-checkbox-group">
+                        <input type="checkbox" id="terms" name="terms" required />
+                        <label for="terms">I agree to the <a href="https://www.youtube.com/watch?v=I68Ehtbu84M" target="_blank">Terms of Service</a> and <a href="https://www.youtube.com/watch?v=I68Ehtbu84M" target="_blank">Privacy Policy</a>.</label>
+                    </div>
+
+                    <button type="submit" class="auth-submit">Register</button>
+                </form>
+
+                <hr class="auth-divider" />
+
+                <p class="auth-footer-text">
+                    ALREADY PART OF THE GRIND? <a asp-controller="Account" asp-action="Login">LOG IN HERE</a>
+                </p>
+            </div>
+        </div>
     </div>
-    <div>
-        <label asp-for="Email">Email</label>
-        <input asp-for="Email" />
-    </div>
-    <div>
-        <label asp-for="PasswordHash">Password</label>
-        <input asp-for="PasswordHash" type="password" />
-    </div>
-
-    <button type="submit">Sign Up</button>
-</form>
-
-<a asp-controller="Account" asp-action="Login">Already have an account? Login</a>
+</body>
+</html>

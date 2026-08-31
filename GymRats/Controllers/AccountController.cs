@@ -1,6 +1,7 @@
 ﻿using GymRats.Data;
 using GymRats.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GymRats.Controllers
 {
@@ -39,7 +40,7 @@ namespace GymRats.Controllers
             if (user != null)
             {
                 HttpContext.Session.SetInt32("UserId", user.Id);
-                return RedirectToAction("Index", "Class");
+                return RedirectToAction("Profile");
             }
             else
             {
@@ -47,6 +48,7 @@ namespace GymRats.Controllers
                 return View();
             }
         }
+
         [HttpGet]
         public IActionResult Logout() 
         { 
@@ -58,8 +60,49 @@ namespace GymRats.Controllers
         public IActionResult Profile()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+                return RedirectToAction("Login");
+
             User user = context.Users.FirstOrDefault(u => u.Id == userId);
+
+            var userBookings = context.Bookings
+                .Include(b => b.Class)
+                .Where(b => b.UserId == userId)
+                .OrderBy(b => b.Class.Time)
+                .ToList();
+
+            ViewBag.Bookings = userBookings;
+
             return View(user);
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(string oldPassword, string newPassword)
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            var user = context.Users.FirstOrDefault(u => u.Id == userId);
+
+            //i belive we wont need it but why not 
+            if (userId == null || user == null)
+                return RedirectToAction("Login");
+
+            if (user.PasswordHash == oldPassword)
+            {
+                user.PasswordHash = newPassword;
+                context.SaveChanges();
+                return RedirectToAction("Profile");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Invalid old password.");
+                return View();
+            }
         }
     }
 }
