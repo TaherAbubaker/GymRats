@@ -14,7 +14,6 @@ namespace GymRats.Controllers
             db = context;
         }
 
-        // POST/GET: Booking/Book?classId=5
         public IActionResult Book(int classId)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
@@ -23,7 +22,6 @@ namespace GymRats.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            // Prevent duplicate bookings: same user, same class
             bool alreadyBooked = db.Bookings
                 .Any(b => b.UserId == userId && b.ClassId == classId);
 
@@ -42,7 +40,6 @@ namespace GymRats.Controllers
             return RedirectToAction("Index", "Class");
         }
 
-        // GET: Booking/Index  ("My Bookings")
         public IActionResult Index()
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
@@ -51,8 +48,6 @@ namespace GymRats.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            // Include() pulls the related Class row along with each Booking,
-            // instead of just the raw ClassId number
             var myBookings = db.Bookings
                 .Include(b => b.Class)
                 .Where(b => b.UserId == userId)
@@ -61,7 +56,6 @@ namespace GymRats.Controllers
             return View(myBookings);
         }
 
-        // POST/GET: Booking/Cancel?id=12   (Booking's own Id, not ClassId)
         public IActionResult Cancel(int id)
         {
             var booking = db.Bookings.Find(id);
