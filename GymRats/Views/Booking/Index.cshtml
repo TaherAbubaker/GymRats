@@ -1,5 +1,4 @@
-﻿
-@model List<GymRats.Models.Booking>
+﻿@model List<GymRats.Models.Booking>
 
 @{
     ViewData["Title"] = "My Bookings";
@@ -16,733 +15,705 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
-            color: #14212b;
-        }
+            body {
+                font-family: 'Poppins', sans-serif;
+                background-color: #f8fafc;
+                color: #14212b;
+            }
 
-        /* =========================
-           PAGE
-        ========================= */
+ 
+            .bookings-container {
+                max-width: 1200px;
+                margin: 60px auto;
+                padding: 0 24px;
+            }
 
-        .bookings-container {
-            max-width: 1200px;
-            margin: 60px auto;
-            padding: 0 24px;
-        }
-
-        /* =========================
-           HEADER
-        ========================= */
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 30px;
-            margin-bottom: 48px;
-        }
-
-        .page-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #0f172a;
-            line-height: 1;
-            margin-bottom: 12px;
-        }
-
-        .title-accent {
-            width: 80px;
-            height: 6px;
-            background-color: #b91c1c;
-        }
-
-        .page-description {
-            max-width: 520px;
-            margin-top: 18px;
-            color: #64748b;
-            font-size: 0.9rem;
-            line-height: 1.7;
-        }
-
-        /* =========================
-           FILTER
-        ========================= */
-
-        .filter-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filter-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #64748b;
-        }
-
-        .status-filter {
-            appearance: none;
-            background-color: #dbeafe;
-            border: 2px solid #0f172a;
-            border-radius: 0;
-            padding: 12px 42px 12px 16px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #0f172a;
-            cursor: pointer;
-        }
-
-        .status-filter:focus {
-            outline: none;
-            border-color: #b91c1c;
-        }
-
-        /* =========================
-           SUMMARY STRIP
-        ========================= */
-
-        .booking-summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-bottom: 48px;
-        }
-
-        .summary-card {
-            background-color: #dbeafe;
-            padding: 28px 32px;
-            position: relative;
-            min-height: 140px;
-        }
-
-        .summary-card.dark {
-            background-color: #0f172a;
-            color: #ffffff;
-        }
-
-        .summary-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #64748b;
-            margin-bottom: 12px;
-        }
-
-        .dark .summary-label {
-            color: #94a3b8;
-        }
-
-        .summary-value {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.2rem;
-            font-weight: 900;
-            line-height: 1;
-        }
-
-        .summary-small {
-            margin-top: 10px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .dark .summary-small {
-            color: #cbd5e1;
-        }
-
-        /* =========================
-           SECTION HEADER
-        ========================= */
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 18px;
-        }
-
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #0f172a;
-        }
-
-        .section-count {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #64748b;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* =========================
-           TABLE
-        ========================= */
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        .bookings-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .bookings-table th {
-            background-color: #0f172a;
-            color: #ffffff;
-            text-align: left;
-            padding: 16px 24px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .bookings-table td {
-            background-color: #dbeafe;
-            padding: 22px 24px;
-            border-bottom: 4px solid #f8fafc;
-            vertical-align: middle;
-        }
-
-        .bookings-table tbody tr {
-            transition: transform 0.15s ease;
-        }
-
-        .bookings-table tbody tr:hover {
-            transform: translateX(4px);
-        }
-
-        /* =========================
-           CLASS
-        ========================= */
-
-        .class-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.25rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #0f172a;
-        }
-
-        .class-type {
-            margin-top: 4px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #64748b;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* =========================
-           TRAINER
-        ========================= */
-
-        .trainer-name {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #475569;
-        }
-
-        /* =========================
-           DATE
-        ========================= */
-
-        .booking-date {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #14212b;
-        }
-
-        .booking-time {
-            display: block;
-            margin-top: 3px;
-            font-size: 0.75rem;
-            color: #64748b;
-            font-weight: 500;
-        }
-
-        /* =========================
-           STATUS
-        ========================= */
-
-        .status-badge {
-            display: inline-block;
-            border: 2px solid #14212b;
-            padding: 6px 12px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .status-confirmed {
-            background-color: #ffffff;
-            color: #14212b;
-        }
-
-        .status-completed {
-            background-color: #0f172a;
-            color: #ffffff;
-            border-color: #0f172a;
-        }
-
-        /* =========================
-           CANCEL BUTTON
-        ========================= */
-
-        .cancel-button {
-            background: transparent;
-            border: 2px solid #b91c1c;
-            color: #b91c1c;
-            padding: 8px 14px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .cancel-button:hover {
-            background-color: #b91c1c;
-            color: #ffffff;
-        }
-
-        .completed-action {
-            color: #94a3b8;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* =========================
-           EMPTY STATE
-        ========================= */
-
-        .empty-state {
-            background-color: #dbeafe;
-            padding: 70px 30px;
-            text-align: center;
-        }
-
-        .empty-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 5rem;
-            font-weight: 900;
-            color: #0f172a;
-            line-height: 1;
-            margin-bottom: 12px;
-        }
-
-        .empty-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: #0f172a;
-            margin-bottom: 8px;
-        }
-
-        .empty-text {
-            color: #64748b;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @@media (max-width: 900px) {
 
             .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .booking-summary {
-                grid-template-columns: 1fr;
-            }
-
-            .page-title {
-                font-size: 3.2rem;
-            }
-        }
-
-        @@media (max-width: 650px) {
-
-            .bookings-container {
-                margin: 35px auto;
-                padding: 0 16px;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                gap: 30px;
+                margin-bottom: 48px;
             }
 
             .page-title {
-                font-size: 2.7rem;
+                font-family: 'Playfair Display', serif;
+                font-size: 4rem;
+                font-weight: 900;
+                text-transform: uppercase;
+                color: #0f172a;
+                line-height: 1;
+                margin-bottom: 12px;
+            }
+
+            .title-accent {
+                width: 80px;
+                height: 6px;
+                background-color: #b91c1c;
             }
 
             .page-description {
-                font-size: 0.8rem;
+                max-width: 520px;
+                margin-top: 18px;
+                color: #64748b;
+                font-size: 0.9rem;
+                line-height: 1.7;
             }
 
+        
+
+            .filter-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .filter-label {
+                font-size: 0.7rem;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: #64748b;
+            }
+
+            .status-filter {
+                appearance: none;
+                background-color: #dbeafe;
+                border: 2px solid #0f172a;
+                border-radius: 0;
+                padding: 12px 42px 12px 16px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 0.75rem;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                color: #0f172a;
+                cursor: pointer;
+            }
+
+                .status-filter:focus {
+                    outline: none;
+                    border-color: #b91c1c;
+                }
+
+        
+
             .booking-summary {
-                gap: 12px;
-                margin-bottom: 35px;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+                margin-bottom: 48px;
             }
 
             .summary-card {
-                padding: 24px;
+                background-color: #dbeafe;
+                padding: 28px 32px;
+                position: relative;
+                min-height: 140px;
             }
 
+                .summary-card.dark {
+                    background-color: #0f172a;
+                    color: #ffffff;
+                }
+
+            .summary-label {
+                font-size: 0.7rem;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: #64748b;
+                margin-bottom: 12px;
+            }
+
+            .dark .summary-label {
+                color: #94a3b8;
+            }
+
+            .summary-value {
+                font-family: 'Playfair Display', serif;
+                font-size: 3.2rem;
+                font-weight: 900;
+                line-height: 1;
+            }
+
+            .summary-small {
+                margin-top: 10px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #475569;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .dark .summary-small {
+                color: #cbd5e1;
+            }
+
+        
+
             .section-header {
-                align-items: flex-start;
-                flex-direction: column;
-                gap: 5px;
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 18px;
             }
 
             .section-title {
-                font-size: 1.6rem;
+                font-family: 'Playfair Display', serif;
+                font-size: 2rem;
+                font-weight: 900;
+                text-transform: uppercase;
+                color: #0f172a;
             }
 
-            .bookings-table th,
-            .bookings-table td {
-                padding: 16px;
+            .section-count {
+                font-size: 0.75rem;
+                font-weight: 700;
+                color: #64748b;
+                letter-spacing: 1px;
+                text-transform: uppercase;
             }
-        }
+
+        
+
+            .table-wrapper {
+                overflow-x: auto;
+            }
+
+            .bookings-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+                .bookings-table th {
+                    background-color: #0f172a;
+                    color: #ffffff;
+                    text-align: left;
+                    padding: 16px 24px;
+                    font-size: 0.7rem;
+                    font-weight: 700;
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                }
+
+                .bookings-table td {
+                    background-color: #dbeafe;
+                    padding: 22px 24px;
+                    border-bottom: 4px solid #f8fafc;
+                    vertical-align: middle;
+                }
+
+                .bookings-table tbody tr {
+                    transition: transform 0.15s ease;
+                }
+
+                    .bookings-table tbody tr:hover {
+                        transform: translateX(4px);
+                    }
+
+        
+
+            .class-name {
+                font-family: 'Playfair Display', serif;
+                font-size: 1.25rem;
+                font-weight: 900;
+                text-transform: uppercase;
+                color: #0f172a;
+            }
+
+            .class-type {
+                margin-top: 4px;
+                font-size: 0.65rem;
+                font-weight: 700;
+                color: #64748b;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+
+        
+
+            .trainer-name {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: #475569;
+            }
+
+        
+
+            .booking-date {
+                font-size: 0.9rem;
+                font-weight: 700;
+                color: #14212b;
+            }
+
+            .booking-time {
+                display: block;
+                margin-top: 3px;
+                font-size: 0.75rem;
+                color: #64748b;
+                font-weight: 500;
+            }
+
+        
+
+            .status-badge {
+                display: inline-block;
+                border: 2px solid #14212b;
+                padding: 6px 12px;
+                font-size: 0.65rem;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+
+            .status-confirmed {
+                background-color: #ffffff;
+                color: #14212b;
+            }
+
+            .status-completed {
+                background-color: #0f172a;
+                color: #ffffff;
+                border-color: #0f172a;
+            }
+
+        
+
+            .cancel-button {
+                background: transparent;
+                border: 2px solid #b91c1c;
+                color: #b91c1c;
+                padding: 8px 14px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 0.65rem;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+                .cancel-button:hover {
+                    background-color: #b91c1c;
+                    color: #ffffff;
+                }
+
+            .completed-action {
+                color: #94a3b8;
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+        
+
+            .empty-state {
+                background-color: #dbeafe;
+                padding: 70px 30px;
+                text-align: center;
+            }
+
+            .empty-number {
+                font-family: 'Playfair Display', serif;
+                font-size: 5rem;
+                font-weight: 900;
+                color: #0f172a;
+                line-height: 1;
+                margin-bottom: 12px;
+            }
+
+            .empty-title {
+                font-family: 'Playfair Display', serif;
+                font-size: 1.8rem;
+                font-weight: 900;
+                text-transform: uppercase;
+                color: #0f172a;
+                margin-bottom: 8px;
+            }
+
+            .empty-text {
+                color: #64748b;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+        
+
+            @@media (max-width: 900px) {
+
+                .page-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .booking-summary {
+                    grid-template-columns: 1fr;
+                }
+
+                .page-title {
+                    font-size: 3.2rem;
+                }
+            }
+
+            @@media (max-width: 650px) {
+
+                .bookings-container {
+                    margin: 35px auto;
+                    padding: 0 16px;
+                }
+
+                .page-title {
+                    font-size: 2.7rem;
+                }
+
+                .page-description {
+                    font-size: 0.8rem;
+                }
+
+                .booking-summary {
+                    gap: 12px;
+                    margin-bottom: 35px;
+                }
+
+                .summary-card {
+                    padding: 24px;
+                }
+
+                .section-header {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+
+                .section-title {
+                    font-size: 1.6rem;
+                }
+
+                .bookings-table th,
+                .bookings-table td {
+                    padding: 16px;
+                }
+            }
     </style>
 </head>
 
 <body>
 
-<div class="bookings-container">
+    <div class="bookings-container">
 
-    <!-- HEADER -->
+    
 
-    <div class="page-header">
+        <div class="page-header">
 
-        <div>
-            <h1 class="page-title">
-                My Bookings
-            </h1>
+            <div>
+                <h1 class="page-title">
+                    My Bookings
+                </h1>
 
-            <div class="title-accent"></div>
+                <div class="title-accent"></div>
 
-            <p class="page-description">
-                Keep track of your training sessions, upcoming classes,
-                and completed workouts. Stay consistent. Stay strong.
-            </p>
+                <p class="page-description">
+                    Keep track of your training sessions, upcoming classes,
+                    and completed workouts. Stay consistent. Stay strong.
+                </p>
+            </div>
+
+            <div class="filter-wrapper">
+
+                <span class="filter-label">
+                    Filter
+                </span>
+
+                <select class="status-filter" id="statusFilter">
+
+                    <option value="all">
+                        All Bookings
+                    </option>
+
+                    <option value="confirmed">
+                        Upcoming
+                    </option>
+
+                    <option value="completed">
+                        Completed
+                    </option>
+
+                </select>
+
+            </div>
+
         </div>
 
-        <div class="filter-wrapper">
 
-            <span class="filter-label">
-                Filter
+    
+
+        @{
+            var now = DateTime.Now;
+
+            var upcomingBookings = Model?
+                .Where(b => b.Class.Time >= now)
+                .OrderBy(b => b.Class.Time)
+                .ToList()
+                ?? new List<GymRats.Models.Booking>();
+
+            var completedBookings = Model?
+                .Where(b => b.Class.Time < now)
+                .ToList()
+                ?? new List<GymRats.Models.Booking>();
+
+            var nextBooking = upcomingBookings.FirstOrDefault();
+        }
+
+        <div class="booking-summary">
+
+            <div class="summary-card dark">
+
+                <div class="summary-label">
+                    Total Bookings
+                </div>
+
+                <div class="summary-value">
+                    @((Model?.Count ?? 0).ToString("D2"))
+                </div>
+
+                <div class="summary-small">
+                    All time
+                </div>
+
+            </div>
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Upcoming
+                </div>
+
+                <div class="summary-value">
+                    @upcomingBookings.Count.ToString("D2")
+                </div>
+
+                <div class="summary-small">
+                    Sessions scheduled
+                </div>
+
+            </div>
+
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Completed
+                </div>
+
+                <div class="summary-value">
+                    @completedBookings.Count.ToString("D2")
+                </div>
+
+                <div class="summary-small">
+                    Sessions finished
+                </div>
+
+            </div>
+
+        </div>
+
+
+    
+
+        <div class="section-header">
+
+            <h2 class="section-title">
+                Booking History
+            </h2>
+
+            <span class="section-count" id="bookingCount">
+                @(Model?.Count ?? 0) Records
             </span>
 
-            <select class="status-filter" id="statusFilter">
-
-                <option value="all">
-                    All Bookings
-                </option>
-
-                <option value="confirmed">
-                    Upcoming
-                </option>
-
-                <option value="completed">
-                    Completed
-                </option>
-
-            </select>
-
         </div>
+
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="table-wrapper">
+
+                <table class="bookings-table">
+
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Trainer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var booking in Model.OrderByDescending(b => b.Class.Time))
+                        {
+                            var status = booking.Class.Time < DateTime.Now
+                                ? "completed"
+                                : "confirmed";
+
+                            <tr data-status="@status">
+
+                                <td>
+
+                                    <div class="class-name">
+                                        @booking.Class.Name
+                                    </div>
+
+                                    <div class="class-type">
+                                        Gym Class
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="trainer-name">
+                                        @booking.Class.Trainer
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="booking-date">
+                                        @booking.Class.Time.ToString("MMM dd, yyyy").ToUpper()
+                                    </div>
+
+                                    <span class="booking-time">
+                                        @booking.Class.Time.ToString("hh:mm tt")
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    @if (status == "confirmed")
+                                    {
+                                        <span class="status-badge status-confirmed">
+                                            BOOKED
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-completed">
+                                            COMPLETED
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <td>
+
+                                    @if (status == "confirmed")
+                                    {
+                                        <form asp-action="Cancel"
+                                              asp-route-id="@booking.Id"
+                                              method="post"
+                                              onsubmit="return confirm('Cancel this booking?');">
+
+                                            <button type="submit"
+                                                    class="cancel-button">
+                                                Cancel
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="completed-action">
+                                            Finished
+                                        </span>
+                                    }
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+
+                <div class="empty-number">
+                    00
+                </div>
+
+                <div class="empty-title">
+                    No Bookings Yet
+                </div>
+
+                <div class="empty-text">
+                    You haven't booked a training session yet.
+                    Time to get to work.
+                </div>
+
+            </div>
+        }
 
     </div>
 
 
-    <!-- SUMMARY -->
+    <script>
 
-    @{
-        var now = DateTime.Now;
+            const filter = document.getElementById('statusFilter');
+            const rows = document.querySelectorAll('.bookings-table tbody tr');
+            const count = document.getElementById('bookingCount');
 
-        var upcomingBookings = Model?
-            .Where(b => b.Class.Time >= now)
-            .OrderBy(b => b.Class.Time)
-            .ToList()
-            ?? new List<GymRats.Models.Booking>();
+            if (filter) {
 
-        var completedBookings = Model?
-            .Where(b => b.Class.Time < now)
-            .ToList()
-            ?? new List<GymRats.Models.Booking>();
+                filter.addEventListener('change', function() {
 
-        var nextBooking = upcomingBookings.FirstOrDefault();
-    }
+                    const selected = this.value;
+                    let visible = 0;
 
-    <div class="booking-summary">
+                    rows.forEach(function(row) {
 
-        <div class="summary-card dark">
+                        const status = row.getAttribute('data-status');
 
-            <div class="summary-label">
-                Total Bookings
-            </div>
+                        if (selected === 'all' || status === selected) {
 
-            <div class="summary-value">
-                @((Model?.Count ?? 0).ToString("D2"))
-            </div>
+                            row.style.display = '';
+                            visible++;
 
-            <div class="summary-small">
-                All time
-            </div>
+                        } else {
 
-        </div>
+                            row.style.display = 'none';
 
-        <div class="summary-card">
+                        }
 
-            <div class="summary-label">
-                Upcoming
-            </div>
+                    });
 
-            <div class="summary-value">
-                @upcomingBookings.Count.ToString("D2")
-            </div>
+                    count.textContent = visible + (visible === 1 ? ' Record' : ' Records');
 
-            <div class="summary-small">
-                Sessions scheduled
-            </div>
+                });
 
-        </div>
+            }
 
-        <div class="summary-card">
-
-            <div class="summary-label">
-                Completed
-            </div>
-
-            <div class="summary-value">
-                @completedBookings.Count.ToString("D2")
-            </div>
-
-            <div class="summary-small">
-                Sessions finished
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- BOOKINGS -->
-
-    <div class="section-header">
-
-        <h2 class="section-title">
-            Booking History
-        </h2>
-
-        <span class="section-count" id="bookingCount">
-            @(Model?.Count ?? 0) Records
-        </span>
-
-    </div>
-
-
-    @if (Model != null && Model.Any())
-    {
-        <div class="table-wrapper">
-
-            <table class="bookings-table">
-
-                <thead>
-                    <tr>
-                        <th>Class</th>
-                        <th>Trainer</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                @foreach (var booking in Model.OrderByDescending(b => b.Class.Time))
-                {
-                    var status = booking.Class.Time < DateTime.Now
-                        ? "completed"
-                        : "confirmed";
-
-                    <tr data-status="@status">
-
-                        <td>
-
-                            <div class="class-name">
-                                @booking.Class.Name
-                            </div>
-
-                            <div class="class-type">
-                                Gym Class
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="trainer-name">
-                                @booking.Class.Trainer
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="booking-date">
-                                @booking.Class.Time.ToString("MMM dd, yyyy").ToUpper()
-                            </div>
-
-                            <span class="booking-time">
-                                @booking.Class.Time.ToString("hh:mm tt")
-                            </span>
-
-                        </td>
-
-
-                        <td>
-
-                            @if (status == "confirmed")
-                            {
-                                <span class="status-badge status-confirmed">
-                                    BOOKED
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="status-badge status-completed">
-                                    COMPLETED
-                                </span>
-                            }
-
-                        </td>
-
-
-                        <td>
-
-                            @if (status == "confirmed")
-                            {
-                                <form asp-action="Cancel"
-                                      asp-route-id="@booking.Id"
-                                      method="post"
-                                      onsubmit="return confirm('Cancel this booking?');">
-
-                                    <button type="submit"
-                                            class="cancel-button">
-                                        Cancel
-                                    </button>
-
-                                </form>
-                            }
-                            else
-                            {
-                                <span class="completed-action">
-                                    Finished
-                                </span>
-                            }
-
-                        </td>
-
-                    </tr>
-                }
-
-                </tbody>
-
-            </table>
-
-        </div>
-    }
-    else
-    {
-        <div class="empty-state">
-
-            <div class="empty-number">
-                00
-            </div>
-
-            <div class="empty-title">
-                No Bookings Yet
-            </div>
-
-            <div class="empty-text">
-                You haven't booked a training session yet.
-                Time to get to work.
-            </div>
-
-        </div>
-    }
-
-</div>
-
-
-<script>
-
-    const filter = document.getElementById('statusFilter');
-    const rows = document.querySelectorAll('.bookings-table tbody tr');
-    const count = document.getElementById('bookingCount');
-
-    if (filter) {
-
-        filter.addEventListener('change', function () {
-
-            const selected = this.value;
-            let visible = 0;
-
-            rows.forEach(function (row) {
-
-                const status = row.getAttribute('data-status');
-
-                if (selected === 'all' || status === selected) {
-
-                    row.style.display = '';
-                    visible++;
-
-                } else {
-
-                    row.style.display = 'none';
-
-                }
-
-            });
-
-            count.textContent = visible + (visible === 1 ? ' Record' : ' Records');
-
-        });
-
-    }
-
-</script>
+    </script>
 
 </body>
 </html>
